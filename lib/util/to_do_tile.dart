@@ -2,12 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ToDoTile extends StatelessWidget {
-
   final String taskName;
   final bool isCompleted;
   Function(bool?)? onChanged;
 
-  ToDoTile({super.key, required this.taskName, required this.isCompleted, required this.onChanged});
+  ToDoTile(
+      {super.key,
+      required this.taskName,
+      required this.isCompleted,
+      required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +20,19 @@ class ToDoTile extends StatelessWidget {
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.yellow,
-
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           children: [
-            Checkbox(value: isCompleted, onChanged: onChanged),
-            Text(taskName),
+            Checkbox(
+                value: isCompleted,
+                onChanged: onChanged,
+                activeColor: Colors.black),
+            Text(taskName,
+                style: TextStyle(
+                    decoration: isCompleted
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none)),
           ],
         ),
       ),
