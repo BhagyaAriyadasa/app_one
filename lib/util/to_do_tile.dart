@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ToDoTile extends StatelessWidget {
@@ -17,7 +16,7 @@ class ToDoTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(25.0),
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.yellow,
           borderRadius: BorderRadius.circular(20),
