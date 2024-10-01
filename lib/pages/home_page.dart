@@ -1,6 +1,8 @@
+import 'package:app_one/data/database.dart';
 import 'package:app_one/util/dialog_alert.dart';
 import 'package:app_one/util/to_do_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,22 +12,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ToDoDataBase db = ToDoDataBase();
+  final _myBox = Hive.box("MyBox");
   final _controller = TextEditingController();
-  List toDoList = [
-    ["Make Tutorial", true],
-    ["Do Exercise", false]
-  ];
+
+  @override
+  void initState(){
+    if(_myBox.get("TODOLIST") == null){
+      db.createInitialData();
+    }else{
+      db.loadData();
+    }
+    super.initState();
+  }
 
   void changeCheckBox(bool? value, int index) {
     setState(() {
-      toDoList[index][1] = !toDoList[index][1];
+      db.toDoList[index][1] = !db.toDoList[index][1];
     });
+    db.updateBox();
   }
 
   void saveNewTask(){
     setState(() {
-      toDoList.add([_controller.text, false]);
+      db.toDoList.add([_controller.text, false]);
     });
+    db.updateBox();
     Navigator.of(context).pop();
   }
 
@@ -39,6 +51,13 @@ class _HomePageState extends State<HomePage> {
             onCancel: () => Navigator.of(context).pop(),
           );
         });
+  }
+
+  void deleteTile(int index){
+    setState(() {
+      db.toDoList.removeAt(index);
+    });
+    db.updateBox();
   }
 
   @override
@@ -55,12 +74,14 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
       ),
       body: ListView.builder(
-        itemCount: toDoList.length,
+        itemCount: db.toDoList.length,
         itemBuilder: (context, index) {
           return ToDoTile(
-              taskName: toDoList[index][0],
-              isCompleted: toDoList[index][1],
-              onChanged: (value) => changeCheckBox(value, index));
+              taskName: db.toDoList[index][0],
+              isCompleted: db.toDoList[index][1],
+              onChanged: (value) => changeCheckBox(value, index),
+              deleteFunction: (context) => deleteTile(index),
+          );
         },
       ),
     );
